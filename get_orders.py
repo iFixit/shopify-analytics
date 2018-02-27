@@ -1,8 +1,44 @@
 import shopify
 import datetime
 import os
+import iso8601
 from functools import partial
 from pymongo import MongoClient
+
+def convert_types(order):
+    def convert_line_items(item):
+        item['price'] = float(item['price'])
+        item['pre_tax_price'] = float(item['pre_tax_price'])
+        item['total_discount'] = float(item['total_discount'])
+        item['tax_lines'] = list(map(convert_tax_lines, item['tax_lines']))
+
+        return item
+
+    def convert_tax_lines(tax_line):
+        tax_line['price'] = float(tax_line['price'])
+        return tax_line
+
+    # Date fields
+    order['created_at'] = iso8601.parse_date(order['created_at'])
+    order['updated_at'] = iso8601.parse_date(order['updated_at'])
+    order['processed_at'] = iso8601.parse_date(order['processed_at'])
+
+    if order['closed_at'] is not None:
+        order['closed_at'] = iso8601.parse_date(order['closed_at'])
+
+    # Price fields
+    order['total_price'] = float(order['total_price'])
+    order['subtotal_price'] = float(order['subtotal_price'])
+    order['total_tax'] = float(order['total_tax'])
+    order['total_discounts'] = float(order['total_discounts'])
+    order['total_price_usd'] = float(order['total_price_usd'])
+    order['total_line_items_price'] = float(order['total_line_items_price'])
+
+    order['line_items'] = list(map(convert_line_items, order['line_items']))
+    order['tax_lines'] = list(map(convert_tax_lines, order['tax_lines']))
+
+    return order
+
 
 def get_all_orders(orders_getter, limit=50):
     """Takes a function that returns orders
@@ -34,7 +70,8 @@ get_orders_from_start_date = partial(shopify.Order.find,
                                      updated_at_min=start_date.isoformat())
 orders_res = get_all_orders(get_orders_from_start_date)
 
-all_orders = map(set_order_id,
+process_order = lambda order: convert_types(set_order_id(order))
+all_orders = map(process_order,
                     map(lambda order: order.to_dict(), orders_res))
 
 mongo = MongoClient(os.environ['MONGODB_URI'])
