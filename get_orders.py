@@ -1,6 +1,7 @@
 import shopify
 import datetime
 import os
+import sys
 import iso8601
 from functools import partial
 from pymongo import MongoClient
@@ -62,8 +63,15 @@ shop_url = "https://{}:{}@{}.myshopify.com/admin".format(os.environ['SHOPIFY_API
                                                          os.environ['SHOPIFY_SHOP_NAME'])
 shopify.ShopifyResource.set_site(shop_url)
 
-days_ago = 1 if 'DAYS_AGO' not in os.environ else int(os.environ['DAYS_AGO'])
-start_date = datetime.datetime.now() - datetime.timedelta(days=days_ago)
+days_ago = 0 if 'DAYS_AGO' not in os.environ else int(os.environ['DAYS_AGO'])
+minutes_ago = 0 if 'MINUTES_AGO' not in os.environ else int(os.environ['MINUTES_AGO'])
+
+if not days_ago and not minutes_ago:
+    print("Error: Must specify DAYS_AGO or MINUTES_AGO in environment", file=sys.stderr)
+    exit()
+
+start_date = datetime.datetime.now() - datetime.timedelta(days=days_ago,
+                                                          minutes=minutes_ago)
 
 get_orders_from_start_date = partial(shopify.Order.find,
                                      status="any",
