@@ -73,7 +73,7 @@ if not days_ago and not minutes_ago:
 tzoffset = datetime.timezone(datetime.timedelta(hours=-7))
 start_date = datetime.datetime.now(tz=tzoffset) - datetime.timedelta(days=days_ago,
                                                           minutes=minutes_ago)
-print("Fetching orders since", iso_start_date)
+print("Fetching orders since", start_date.isoformat())
 
 get_orders_from_start_date = partial(shopify.Order.find,
                                      status="any",
