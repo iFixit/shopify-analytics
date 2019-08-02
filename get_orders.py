@@ -70,7 +70,8 @@ if not days_ago and not minutes_ago:
     print("Error: Must specify DAYS_AGO or MINUTES_AGO in environment", file=sys.stderr)
     exit()
 
-start_date = datetime.datetime.now() - datetime.timedelta(days=days_ago,
+tzoffset = datetime.timezone(datetime.timedelta(hours=-7))
+start_date = datetime.datetime.now(tz=tzoffset) - datetime.timedelta(days=days_ago,
                                                           minutes=minutes_ago)
 
 get_orders_from_start_date = partial(shopify.Order.find,
