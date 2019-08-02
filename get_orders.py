@@ -73,6 +73,7 @@ if not days_ago and not minutes_ago:
 tzoffset = datetime.timezone(datetime.timedelta(hours=-7))
 start_date = datetime.datetime.now(tz=tzoffset) - datetime.timedelta(days=days_ago,
                                                           minutes=minutes_ago)
+print("Fetching orders since", iso_start_date)
 
 get_orders_from_start_date = partial(shopify.Order.find,
                                      status="any",
@@ -87,4 +88,5 @@ mongo = MongoClient(os.environ['MONGODB_URI'])
 upsert_order = partial(mongo.warehouse.shopify_orders.replace_one, upsert=True)
 
 for order in all_orders:
+    print(f"Processing order {order['_id']} updated at: {order['updated_at']}") 
     upsert_order({'_id': order['_id']}, order)
