@@ -46,22 +46,18 @@ def get_all_orders(orders_getter, limit=50):
     and pages through it until there are no orders left.
     This returns a generator so that orders can be processed as a stream.
     """
-    page = 1
-    orders = orders_getter(page=page, limit=limit)
+    orders = shopify.PaginatedIterator(orders_getter(limit=limit))
 
-    while orders:
-        yield from orders
-        page += 1
-        orders = orders_getter(page=page, limit=limit)
+    for page in orders:
+        yield from page
 
 def set_order_id(order):
     order['_id'] = order['id']
     return order
 
-shop_url = "https://{}:{}@{}.myshopify.com/admin".format(os.environ['SHOPIFY_API_KEY'],
-                                                         os.environ['SHOPIFY_PASSWORD'],
-                                                         os.environ['SHOPIFY_SHOP_NAME'])
-shopify.ShopifyResource.set_site(shop_url)
+shop_url = "https://{}.myshopify.com/admin".format(os.environ['SHOPIFY_SHOP_NAME'])
+session = shopify.Session(shop_url, "2021-01", os.environ['SHOPIFY_PASSWORD'])
+shopify.ShopifyResource.activate_session(session)
 
 days_ago = 0 if 'DAYS_AGO' not in os.environ else int(os.environ['DAYS_AGO'])
 minutes_ago = 0 if 'MINUTES_AGO' not in os.environ else int(os.environ['MINUTES_AGO'])

@@ -1,9 +1,8 @@
-FROM alpine:latest
-
-RUN apk update && apk add python3 && mkdir -p /opt/shopify-analytics
-COPY . /opt/shopify-analytics
+FROM python:3-alpine
 
 WORKDIR /opt/shopify-analytics
-RUN cd /opt/shopify-analytics && pip3 install -r requirements.txt
+COPY ./requirements.txt ./
+RUN pip3 install -r requirements.txt
+COPY ./get_orders.py ./
 
 ENTRYPOINT python3 get_orders.py
