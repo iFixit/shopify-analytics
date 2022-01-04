@@ -9,8 +9,9 @@ This app is dockerized.
 
 ```
 > docker build --no-cache -t shopify-analytics:development
+> cp secrets.env.example secrets.env
 > ...
-> # fetch secrets and put them in secrets.env
+> # Go find the secrets
 > ...
 > docker run --env-file secrets.env shopify-analytics:development
 ```
