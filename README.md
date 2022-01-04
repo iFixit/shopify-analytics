@@ -8,7 +8,7 @@ data in Mongo
 This app is dockerized.
 
 ```sh
-> docker build --no-cache -t shopify-analytics:development
+> docker build --no-cache -t shopify-analytics:development .
 > cp secrets.env.example secrets.env
 > ...
 > # Go find the secrets
