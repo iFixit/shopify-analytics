@@ -7,7 +7,7 @@ data in Mongo
 
 This app is dockerized.
 
-```
+```sh
 > docker build --no-cache -t shopify-analytics:development
 > cp secrets.env.example secrets.env
 > ...
@@ -16,16 +16,15 @@ This app is dockerized.
 > docker run --env-file secrets.env shopify-analytics:development
 ```
 
-This will attempt to write to the production mongo instance. If you just want to
-test order fetching / simply print the data to console. If you need to write to
-mongo, stub that out by running your own local mongo container
+### Stubbing Mongo
 
-`docker run --rm -p 27017:27017 -d --name mongo-ephemeral mongo`
+Spin up a local mongo container:
 
-Inspect the contents of that container via mongo shell:
+- `docker run --rm -p 27017:27017 -d --name mongo-ephemeral mongo`
 
-`docker run -it --rm --network=host mongo mongosh test`
+The provided `secrets.env.example` is already configured to talk to this host:
 
-Update secrets.env to point to your mongo container:
+- `MONGODB_URI=mongodb://mongo:27017`
 
-`MONGODB_URI=mongodb://mongo:27017`
+Inspect the contents of that container via [mongo shell](https://docs.mongodb.com/manual/tutorial/query-documents/):
+- `docker run -it --rm --network=host mongo mongosh test`
