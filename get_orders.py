@@ -84,5 +84,5 @@ mongo = MongoClient(os.environ['MONGODB_URI'])
 upsert_order = partial(mongo.warehouse.shopify_orders.replace_one, upsert=True)
 
 for order in all_orders:
-    print(f"Processing order {order['_id']} updated at: {order['updated_at']}") 
+    print(f"Processing order {order['_id']} updated at: {order['updated_at']}")
     upsert_order({'_id': order['_id']}, order)
