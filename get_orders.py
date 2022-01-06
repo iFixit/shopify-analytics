@@ -64,10 +64,9 @@ minutes_ago = 0 if 'MINUTES_AGO' not in os.environ else int(os.environ['MINUTES_
 
 if not days_ago and not minutes_ago:
     print("Error: Must specify DAYS_AGO or MINUTES_AGO in environment", file=sys.stderr)
-    exit()
+    sys.exit()
 
 tzoffset = datetime.timezone(datetime.timedelta(hours=-7))
-
 now = datetime.datetime.now(tz=tzoffset)
 start_date = now - datetime.timedelta(days=days_ago, minutes=minutes_ago)
 
