@@ -78,7 +78,7 @@ orders_res = get_all_orders(get_orders_from_start_date)
 
 process_order = lambda order: convert_types(set_order_id(order))
 all_orders = map(process_order,
-                    map(lambda order: order.to_dict(), orders_res))
+                map(lambda order: order.to_dict(), orders_res))
 
 mongo = MongoClient(os.environ['MONGODB_URI'])
 upsert_order = partial(mongo.warehouse.shopify_orders.replace_one, upsert=True)
