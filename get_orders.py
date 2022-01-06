@@ -1,3 +1,10 @@
+"""Shopify Analytics
+
+This script pulls order data from a specified shopify store, does some
+transformations on the order json, and dumps the resulting order data into
+MongoDB for further analytics.
+"""
+
 import datetime
 import os
 import sys
@@ -7,6 +14,9 @@ import shopify
 from pymongo import MongoClient
 
 def convert_types(order):
+    """
+    Converts monetary order fields from strings to their respective numeric types.
+    """
     def convert_line_items(item):
         item['price'] = float(item['price'])
         item['pre_tax_price'] = float(item['pre_tax_price'])
@@ -52,6 +62,8 @@ def get_all_orders(orders_getter, limit=50):
         yield from page
 
 def set_order_id(order):
+    """Sets the order _id for the mongo upsert.
+    """
     order['_id'] = order['id']
     return order
 
