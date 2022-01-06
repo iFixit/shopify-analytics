@@ -1,8 +1,8 @@
-import shopify
 import datetime
 import os
 import sys
 import iso8601
+import shopify
 from functools import partial
 from pymongo import MongoClient
 
