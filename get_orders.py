@@ -1,9 +1,9 @@
 import datetime
 import os
 import sys
+from functools import partial
 import iso8601
 import shopify
-from functools import partial
 from pymongo import MongoClient
 
 def convert_types(order):
