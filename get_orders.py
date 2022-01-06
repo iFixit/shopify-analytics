@@ -67,8 +67,10 @@ if not days_ago and not minutes_ago:
     exit()
 
 tzoffset = datetime.timezone(datetime.timedelta(hours=-7))
-start_date = datetime.datetime.now(tz=tzoffset) - datetime.timedelta(days=days_ago,
-                                                          minutes=minutes_ago)
+
+now = datetime.datetime.now(tz=tzoffset)
+start_date = now - datetime.timedelta(days=days_ago, minutes=minutes_ago)
+
 print("Fetching orders since", start_date.isoformat())
 
 get_orders_from_start_date = partial(shopify.Order.find,
@@ -78,7 +80,7 @@ orders_res = get_all_orders(get_orders_from_start_date)
 
 process_order = lambda order: convert_types(set_order_id(order))
 all_orders = map(process_order,
-                map(lambda order: order.to_dict(), orders_res))
+                 map(lambda order: order.to_dict(), orders_res))
 
 mongo = MongoClient(os.environ['MONGODB_URI'])
 upsert_order = partial(mongo.warehouse.shopify_orders.replace_one, upsert=True)
