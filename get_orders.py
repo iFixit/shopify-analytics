@@ -6,6 +6,7 @@ import iso8601
 from functools import partial
 from pymongo import MongoClient
 
+SHOPIFY_API_VERSION = "2021-10"
 
 def convert_types(order):
     def convert_line_items(item):
@@ -58,7 +59,7 @@ def set_order_id(order):
 
 
 shop_url = "https://{}.myshopify.com/admin".format(os.environ["SHOPIFY_SHOP_NAME"])
-session = shopify.Session(shop_url, "2021-10", os.environ["SHOPIFY_PASSWORD"])
+session = shopify.Session(shop_url, SHOPIFY_API_VERSION, os.environ["SHOPIFY_PASSWORD"])
 shopify.ShopifyResource.activate_session(session)
 
 days_ago = 0 if "DAYS_AGO" not in os.environ else int(os.environ["DAYS_AGO"])
