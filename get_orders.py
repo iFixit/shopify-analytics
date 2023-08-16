@@ -33,7 +33,6 @@ def convert_types(order):
     order["subtotal_price"] = float(order["subtotal_price"])
     order["total_tax"] = float(order["total_tax"])
     order["total_discounts"] = float(order["total_discounts"])
-    order["total_price_usd"] = float(order["total_price_usd"])
     order["total_line_items_price"] = float(order["total_line_items_price"])
 
     order["line_items"] = list(map(convert_line_items, order["line_items"]))
