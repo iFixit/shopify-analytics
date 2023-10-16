@@ -8,6 +8,7 @@ on:
 
 env:
   ECR_IMAGE_REPO: "884681002735.dkr.ecr.us-east-1.amazonaws.com/shopify-analytics"
+  DEPLOY_IAM_ROLE: "arn:aws:iam::884681002735:role/github_actions/github-actions-role"
 
 jobs:
   deploy:
@@ -18,3 +19,15 @@ jobs:
 
       - name: Build Image
         run: docker build -t ${{ env.ECR_IMAGE_REPO }}:${{ github.sha }} --label org.label-schema.name="shopify-analytics" .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ env.DEPLOY_IAM_ROLE }}
+          aws-region: us-east-1
+
+      - name: ECR login
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push to ECR
+        run: docker push ${{ env.ECR_IMAGE_REPO }}:${{ github.sha }}
