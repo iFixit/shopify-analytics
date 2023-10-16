@@ -1,0 +1,20 @@
+name: Shopify Analytics Deploy
+
+on:
+  push:
+    branches: [ master ]
+  # Allow running this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  ECR_IMAGE_REPO: "884681002735.dkr.ecr.us-east-1.amazonaws.com/shopify-analytics"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Image
+        run: docker build -t ${{ env.ECR_IMAGE_REPO }}:${{ github.sha }} --label org.label-schema.name="shopify-analytics" .
