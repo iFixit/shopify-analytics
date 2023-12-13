@@ -31,7 +31,7 @@ jobs:
           aws-region: us-east-1
 
       - name: ECR login
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Push to ECR
         run: docker push ${{ env.ECR_IMAGE_REPO }}:${{ github.sha }}
