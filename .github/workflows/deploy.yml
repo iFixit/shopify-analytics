@@ -25,13 +25,13 @@ jobs:
         run: docker build -t ${{ env.ECR_IMAGE_REPO }}:${{ github.sha }} --label org.label-schema.name="shopify-analytics" .
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.DEPLOY_IAM_ROLE }}
           aws-region: us-east-1
 
       - name: ECR login
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Push to ECR
         run: docker push ${{ env.ECR_IMAGE_REPO }}:${{ github.sha }}
